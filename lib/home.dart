@@ -24,9 +24,11 @@ class HomePage extends HookWidget {
     GetStorage box = GetStorage();
     final screenWidth = MediaQuery.of(context).size.width;
     double realScreenWidth = screenWidth <= 800 ? screenWidth : 800;
+    final _language = useState<String>('');
 
     useEffect(() {
       _apiKeyController.text = box.read(kAPIKey) ?? '';
+      _language.value = box.read(kLanguageLanguageCodeKey);
       _apiKeyController.addListener(() {
         _apiKeyInput.value = ObjectUtil.isNotEmpty(_apiKeyController.text);
       });
@@ -99,7 +101,7 @@ class HomePage extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: realScreenWidth - 20 - 100 - 40 - 20,
+                        width: realScreenWidth - 20 - 100 - 40 - 20 - 100 - 20 - 20,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all()),
                         child: TextField(
@@ -119,6 +121,46 @@ class HomePage extends HookWidget {
                         width: 100,
                         onPressed: !_apiKeyInput.value ? null : _saveKeyClicked,
                         text: 'ok'.tr,
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      VButton(
+                        width: 100,
+                        onPressed: () {
+                          Get.bottomSheet(
+                            Container(
+                              color: Colors.white,
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Wrap(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      _language.value == 'zh' ? 'En' : '中文',
+                                    ),
+                                    onTap: () {
+                                      var local = _language.value == 'zh' ? Locale('en', 'US') : Locale('zh', 'CN');
+                                      Get.updateLocale(local);
+                                      box.write(kLanguageCountryCodeSettingKey, local.countryCode);
+                                      box.write(kLanguageLanguageCodeKey, local.languageCode);
+                                      _language.value = local.languageCode;
+                                      Get.back();
+                                    },
+                                  ),
+                                  // ListTile(
+                                  //   leading: Icon(Icons.app_settings_alt_outlined),
+                                  //   title: Text("黑夜模式"),
+                                  //   onTap: () {
+                                  //     Get.changeTheme(ThemeData.dark());
+                                  //   },
+                                  // )
+                                ],
+                              ),
+                            ),
+                            useRootNavigator: true,
+                          );
+                        },
+                        text: 'setting'.tr,
                       ),
                     ],
                   ),

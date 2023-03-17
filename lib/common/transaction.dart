@@ -11,6 +11,7 @@ class Transaction extends Translations {
           'input_key': '请输入API Key',
           'ok': '确认',
           'loading': '加载中...',
+          'setting': '设置',
         },
         'en_US': {
           'title': 'Daily Report',
@@ -20,6 +21,7 @@ class Transaction extends Translations {
           'input_key': 'Please enter the API Key',
           'ok': 'OK',
           'loading': 'Loading...',
+          'setting': 'Setting',
         }
       };
 }
