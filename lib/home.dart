@@ -51,7 +51,7 @@ class HomePage extends HookWidget {
         "messages": [
           {"role": "user", "content": "帮我用英文润色成一条条工作报告，用- 隔开，不要用过去式：${_textController.text}"},
         ],
-        "temperature": 0.7,
+        "temperature": 0.5,
         "top_p": 1,
         "frequency_penalty": 0,
         "presence_penalty": 0,
