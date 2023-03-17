@@ -10,6 +10,7 @@ class Transaction extends Translations {
           'error': '错误',
           'input_key': '请输入API Key',
           'ok': '确认',
+          'loading': '加载中...',
         },
         'en_US': {
           'title': 'Daily Report',
@@ -18,6 +19,7 @@ class Transaction extends Translations {
           'error': 'Error',
           'input_key': 'Please enter the API Key',
           'ok': 'OK',
+          'loading': 'Loading...',
         }
       };
 }

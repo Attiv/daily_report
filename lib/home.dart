@@ -15,8 +15,11 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final _textController = useTextEditingController();
     final _apiKeyController = useTextEditingController();
+    final _resultController = useTextEditingController();
     final _apiKeyInput = useState<bool>(false);
     final _textInput = useState<bool>(false);
+    final _resultInput = useState<bool>(false);
+    final _loading = useState<bool>(false);
     final dio = Dio();
     GetStorage box = GetStorage();
     final screenWidth = MediaQuery.of(context).size.width;
@@ -56,6 +59,7 @@ class HomePage extends HookWidget {
         "stream": false,
         "n": 1,
       };
+      _loading.value = true;
       final rs = await dio.post(
         "https://api.openai.com/v1/chat/completions",
         data: params,
@@ -67,7 +71,15 @@ class HomePage extends HookWidget {
           },
         ),
       );
-      print(rs.data['choices'][0]['message']['content']);
+      _resultInput.value = true;
+      _loading.value = false;
+      try {
+        String result = rs.data['choices'][0]['message']['content'];
+        _resultController.text = result;
+      } catch (e) {
+        _resultController.text = e.toString();
+        print(e);
+      }
     }
 
     void _saveKeyClicked() {
@@ -143,9 +155,30 @@ class HomePage extends HookWidget {
                     height: 20,
                   ),
                   VButton(
-                    onPressed: !_textInput.value ? null : _submit,
-                    text: 'submit'.tr,
-                  )
+                    onPressed: _loading.value == true
+                        ? null
+                        : !_textInput.value
+                            ? null
+                            : _submit,
+                    text: _loading.value == false ? 'submit'.tr : 'loading'.tr,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  if (_resultInput.value)
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all()),
+                      child: TextField(
+                        controller: _resultController,
+                        readOnly: true,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration.collapsed(
+                          hintText: '',
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
