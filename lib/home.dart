@@ -51,7 +51,10 @@ class HomePage extends HookWidget {
       Map params = {
         "model": "gpt-3.5-turbo",
         "messages": [
-          {"role": "user", "content": "帮我用英文润色成一条条工作报告，用- 隔开，不要用过去式：${_textController.text}"},
+          {
+            "role": "user",
+            "content": "帮我用 ${_language.value == 'zh' ? '中文' : '英文'}润色成一条条工作报告，用- 隔开，不要用过去式：${_textController.text}"
+          },
         ],
         "temperature": 0.5,
         "top_p": 1,
@@ -98,10 +101,29 @@ class HomePage extends HookWidget {
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      VButton(
+                        width: 80,
+                        onPressed: () {
+                          var local = _language.value == 'zh' ? Locale('en', 'US') : Locale('zh', 'CN');
+                          Get.updateLocale(local);
+                          box.write(kLanguageCountryCodeSettingKey, local.countryCode);
+                          box.write(kLanguageLanguageCodeKey, local.languageCode);
+                          _language.value = local.languageCode;
+                        },
+                        text: _language.value == 'zh' ? 'En' : '中文',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: realScreenWidth - 20 - 100 - 40 - 20 - 100 - 20 - 20,
+                        width: realScreenWidth - 20 - 100 - 40 - 20 - 20,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all()),
                         child: TextField(
@@ -124,43 +146,6 @@ class HomePage extends HookWidget {
                       ),
                       const SizedBox(
                         width: 20,
-                      ),
-                      VButton(
-                        width: 100,
-                        onPressed: () {
-                          Get.bottomSheet(
-                            Container(
-                              color: Colors.white,
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: Wrap(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                      _language.value == 'zh' ? 'En' : '中文',
-                                    ),
-                                    onTap: () {
-                                      var local = _language.value == 'zh' ? Locale('en', 'US') : Locale('zh', 'CN');
-                                      Get.updateLocale(local);
-                                      box.write(kLanguageCountryCodeSettingKey, local.countryCode);
-                                      box.write(kLanguageLanguageCodeKey, local.languageCode);
-                                      _language.value = local.languageCode;
-                                      Get.back();
-                                    },
-                                  ),
-                                  // ListTile(
-                                  //   leading: Icon(Icons.app_settings_alt_outlined),
-                                  //   title: Text("黑夜模式"),
-                                  //   onTap: () {
-                                  //     Get.changeTheme(ThemeData.dark());
-                                  //   },
-                                  // )
-                                ],
-                              ),
-                            ),
-                            useRootNavigator: true,
-                          );
-                        },
-                        text: 'setting'.tr,
                       ),
                     ],
                   ),
