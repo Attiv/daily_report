@@ -90,6 +90,7 @@ class HomePage extends HookWidget {
     void _saveKeyClicked() {
       final key = _apiKeyController.text;
       box.write(kAPIKey, key);
+      Get.snackbar('OK', 'OK');
     }
 
     return Scaffold(
