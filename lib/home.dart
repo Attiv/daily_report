@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends HookWidget {
   HomePage({Key? key}) : super(key: key);
@@ -81,6 +82,8 @@ class HomePage extends HookWidget {
       try {
         String result = rs.data['choices'][0]['message']['content'];
         _resultController.text = result;
+        Clipboard.setData(ClipboardData(text: _resultController.text));
+        Get.snackbar('OK', 'Copy To Clipboard');
       } catch (e) {
         _resultController.text = e.toString();
         print(e);
@@ -197,13 +200,22 @@ class HomePage extends HookWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all()),
-                      child: TextField(
-                        controller: _resultController,
-                        readOnly: true,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration.collapsed(
-                          hintText: '',
+                      child: GestureDetector(
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: _resultController.text));
+                          Get.snackbar('OK', 'Copy To Clipboard');
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        child: IgnorePointer(
+                          child: TextField(
+                            controller: _resultController,
+                            readOnly: true,
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration.collapsed(
+                              hintText: '',
+                            ),
+                          ),
                         ),
                       ),
                     ),
